@@ -1,22 +1,9 @@
-import { Component, ChangeEvent } from "react";
-import { RouteComponentProps } from 'react-router-dom';
-
+import React, { Component } from "react";
 import TutorialDataService from "../services/tutorial.service";
-import ITutorialData from "../types/tutorial.type";
+import { withRouter } from '../common/with-router';
 
-interface RouterProps { // type for `match.params`
-  id: string; // must be type `string` since value comes from the URL
-}
-
-type Props = RouteComponentProps<RouterProps>;
-
-type State = {
-  currentTutorial: ITutorialData;
-  message: string;
-}
-
-export default class Tutorial extends Component<Props, State> {
-  constructor(props: Props) {
+class Tutorial extends Component {
+  constructor(props) {
     super(props);
     this.onChangeTitle = this.onChangeTitle.bind(this);
     this.onChangeDescription = this.onChangeDescription.bind(this);
@@ -30,100 +17,99 @@ export default class Tutorial extends Component<Props, State> {
         id: null,
         title: "",
         description: "",
-        published: false,
+        published: false
       },
-      message: "",
+      message: ""
     };
   }
 
   componentDidMount() {
-    this.getTutorial(this.props.match.params.id);
+    this.getTutorial(this.props.router.params.id);
   }
 
-  onChangeTitle(e: ChangeEvent<HTMLInputElement>) {
+  onChangeTitle(e) {
     const title = e.target.value;
 
-    this.setState(function (prevState) {
+    this.setState(function(prevState) {
       return {
         currentTutorial: {
           ...prevState.currentTutorial,
-          title: title,
-        },
+          title: title
+        }
       };
     });
   }
 
-  onChangeDescription(e: ChangeEvent<HTMLInputElement>) {
+  onChangeDescription(e) {
     const description = e.target.value;
-
-    this.setState((prevState) => ({
+    
+    this.setState(prevState => ({
       currentTutorial: {
         ...prevState.currentTutorial,
-        description: description,
-      },
+        description: description
+      }
     }));
   }
 
-  getTutorial(id: string) {
+  getTutorial(id) {
     TutorialDataService.get(id)
-      .then((response: any) => {
+      .then(response => {
         this.setState({
-          currentTutorial: response.data,
+          currentTutorial: response.data
         });
         console.log(response.data);
       })
-      .catch((e: Error) => {
+      .catch(e => {
         console.log(e);
       });
   }
 
-  updatePublished(status: boolean) {
-    const data: ITutorialData = {
+  updatePublished(status) {
+    var data = {
       id: this.state.currentTutorial.id,
       title: this.state.currentTutorial.title,
       description: this.state.currentTutorial.description,
-      published: status,
+      published: status
     };
 
-    TutorialDataService.update(data, this.state.currentTutorial.id)
-      .then((response: any) => {
-        this.setState((prevState) => ({
+    TutorialDataService.update(this.state.currentTutorial.id, data)
+      .then(response => {
+        this.setState(prevState => ({
           currentTutorial: {
             ...prevState.currentTutorial,
-            published: status,
-          },
-          message: "The status was updated successfully!"
+            published: status
+          }
         }));
         console.log(response.data);
       })
-      .catch((e: Error) => {
+      .catch(e => {
         console.log(e);
       });
   }
 
   updateTutorial() {
     TutorialDataService.update(
-      this.state.currentTutorial,
-      this.state.currentTutorial.id
+      this.state.currentTutorial.id,
+      this.state.currentTutorial
     )
-      .then((response: any) => {
+      .then(response => {
         console.log(response.data);
         this.setState({
-          message: "The tutorial was updated successfully!",
+          message: "The tutorial was updated successfully!"
         });
       })
-      .catch((e: Error) => {
+      .catch(e => {
         console.log(e);
       });
   }
 
-  deleteTutorial() {
+  deleteTutorial() {    
     TutorialDataService.delete(this.state.currentTutorial.id)
-      .then((response: any) => {
+      .then(response => {
         console.log(response.data);
-        this.props.history.push("/tutorials");
+        this.props.router.navigate('/tutorials');
       })
-      .catch((e: Error) => {
+      .catch(e => {
         console.log(e);
       });
   }
@@ -208,3 +194,5 @@ export default class Tutorial extends Component<Props, State> {
     );
   }
 }
+
+export default withRouter(Tutorial);

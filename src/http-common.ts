@@ -1,7 +1,9 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "https://b.easonng520.repl.co/api/",
+//  baseURL: "http://localhost:8080/api",
+  baseURL: "https://b.easonng520.repl.co/api",
+  
   headers: {
     "Content-type": "application/json"
   }

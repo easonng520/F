@@ -1,33 +1,32 @@
 import http from "../http-common";
-import ITutorialData from "../types/tutorial.type"
 
 class TutorialDataService {
   getAll() {
-    return http.get<Array<ITutorialData>>("/tutorials");
+    return http.get("/tutorials");
   }
 
-  get(id: string) {
-    return http.get<ITutorialData>(`/tutorials/${id}`);
+  get(id) {
+    return http.get(`/tutorials/${id}`);
   }
 
-  create(data: ITutorialData) {
-    return http.post<ITutorialData>("/tutorials", data);
+  create(data) {
+    return http.post("/tutorials", data);
   }
 
-  update(data: ITutorialData, id: any) {
-    return http.put<any>(`/tutorials/${id}`, data);
+  update(id, data) {
+    return http.put(`/tutorials/${id}`, data);
   }
 
-  delete(id: any) {
-    return http.delete<any>(`/tutorials/${id}`);
+  delete(id) {
+    return http.delete(`/tutorials/${id}`);
   }
 
   deleteAll() {
-    return http.delete<any>(`/tutorials`);
+    return http.delete(`/tutorials`);
   }
 
-  findByTitle(title: string) {
-    return http.get<Array<ITutorialData>>(`/tutorials?title=${title}`);
+  findByTitle(title) {
+    return http.get(`/tutorials?title=${title}`);
   }
 }
 
